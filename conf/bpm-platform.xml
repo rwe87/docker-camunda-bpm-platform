@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2019 InfAI (CC SES)
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<bpm-platform xmlns="http://www.camunda.org/schema/1.0/BpmPlatform"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://www.camunda.org/schema/1.0/BpmPlatform http://www.camunda.org/schema/1.0/BpmPlatform ">
+
+    <job-executor>
+        <job-acquisition name="default" >
+            <properties>
+                <property name="maxJobsPerAcquisition">3</property>
+                <property name="lockTimeInMillis">300000</property>
+                <property name="waitTimeInMillis">5000</property>
+                <property name="maxWait">60000</property>
+                <property name="backoffTimeInMillis">0</property>
+                <property name="maxBackoff">0</property>
+                <property name="backoffDecreaseThreshold">100</property>
+                <property name="waitIncreaseFactor">2</property>
+            </properties>
+        </job-acquisition>
+        <properties>
+            <property name="queueSize">3</property>
+            <property name="corePoolSize">3</property>
+            <property name="maxPoolSize">10</property>
+            <property name="keepAliveTime">0</property>
+        </properties>
+    </job-executor>
+
+    <process-engine name="default">
+        <job-acquisition>default</job-acquisition>
+        <configuration>org.camunda.bpm.engine.impl.cfg.StandaloneProcessEngineConfiguration</configuration>
+        <datasource>java:jdbc/ProcessEngine</datasource>
+
+        <properties>
+            <property name="history">full</property>
+            <property name="databaseSchemaUpdate">true</property>
+            <property name="authorizationEnabled">true</property>
+            <property name="jobExecutorDeploymentAware">true</property>
+        </properties>
+
+        <plugins>
+            <plugin>
+                <class>org.camunda.connect.plugin.impl.ConnectProcessEnginePlugin</class>
+            </plugin>
+            <plugin>
+                <class>org.camunda.spin.plugin.impl.SpinProcessEnginePlugin</class>
+            </plugin>
+        </plugins>
+
+    </process-engine>
+
+</bpm-platform>
